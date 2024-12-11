@@ -43,6 +43,11 @@ const toUrl = (base: URL, route: Route): URL => {
   }
 };
 
+export const href = (route: Route): string => {
+  const dummyBase = new URL("http://localhost");
+  return toUrl(dummyBase, route).pathname;
+};
+
 export const Route = {
   fromUrl,
   toUrl,

@@ -10,7 +10,8 @@ export type ICtx = {
 };
 
 export const Ctx = (): ICtx => {
-  const keyValueDb = KeyValueDb({ t: "hash-map", hashMap: new Map() });
+  let keyValueDb = KeyValueDb({ t: "hash-map", hashMap: new Map() });
+  keyValueDb = KeyValueDb({ t: "file-system", filePath: "./data.json" });
   const todoListDb = TodoListDb({ t: "key-value-db", keyValueDb });
   return {
     keyValueDb,

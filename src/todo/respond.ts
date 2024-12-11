@@ -124,6 +124,10 @@ const viewIndex = (input: { lists: TodoList[] }) => html`
           return html`
             <article>
               <h2>${list.name}</h2>
+              <div>
+                <a role="button" class="outline">View</a>
+                <a role="button" class="outline">Delete</a>
+              </div>
             </article>
           `;
         })

@@ -9,8 +9,8 @@ export type Config = {
   keyValueDb: IKeyValueDb;
 };
 
-export const TodoListDb = (config: Config): ITodoListDb => {
-  const keyValueDb = KeyValueDb({
+export const TodoListDb = async (config: Config): Promise<ITodoListDb> => {
+  const keyValueDb = await KeyValueDb({
     t: "with-namespace",
     instance: config.keyValueDb,
     namespace: ["todo-lists"],

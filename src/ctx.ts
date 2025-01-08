@@ -11,7 +11,7 @@ export type ICtx = {
 
 export const Ctx = async (): Promise<ICtx> => {
   const keyValueDb = await getKeyValueDb();
-  const todoListDb = TodoListDb({ t: "key-value-db", keyValueDb });
+  const todoListDb = await TodoListDb({ t: "key-value-db", keyValueDb });
   return {
     keyValueDb,
     todoListDb,

@@ -20,36 +20,35 @@ export const viewDoc = (input: { body: string; preload: string[] }) => html`
         document.addEventListener("submit", (event) => {
           const form = event.target;
           if (form.tagName === "FORM") {
-            const submitButton = form.querySelector("button[type='submit']");
-
             if (!form.checkValidity()) {
               event.preventDefault();
-              if (submitButton) {
-                submitButton.removeAttribute("aria-busy");
-                submitButton.removeAttribute("disabled");
-              }
+              removeLoadingState(form);
               return;
             }
 
-            if (submitButton) {
-              submitButton.setAttribute("aria-busy", "true");
-              setTimeout(() => {
-                submitButton.setAttribute("disabled", "true");
-              }, 0);
-            }
+            addLoadingState(form);
 
-            const onFormSubmitSuccess = () => {
-              if (submitButton) {
-                submitButton.removeAttribute("aria-busy");
-                submitButton.removeAttribute("disabled");
-              }
-            };
-
-            window.addEventListener("beforeunload", onFormSubmitSuccess, {
+            window.addEventListener("load", () => removeLoadingState(form), {
               once: true,
             });
           }
         });
+
+        function addLoadingState(form) {
+          const submitButton = form.querySelector("button[type='submit']");
+          submitButton.setAttribute("aria-busy", "true");
+          setTimeout(() => {
+            submitButton.setAttribute("disabled", "true");
+          }, 0);
+        }
+
+        function removeLoadingState(form) {
+          const submitButton = form.querySelector("button[type='submit']");
+          if (submitButton) {
+            submitButton.removeAttribute("aria-busy");
+            submitButton.removeAttribute("disabled");
+          }
+        }
 
         function swapInnerHTML(selector, url) {
           fetch(url)

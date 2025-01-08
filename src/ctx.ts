@@ -9,12 +9,25 @@ export type ICtx = {
   todoListDb: ITodoListDb;
 };
 
-export const Ctx = (): ICtx => {
-  let keyValueDb = KeyValueDb({ t: "hash-map", hashMap: new Map() });
-  keyValueDb = KeyValueDb({ t: "file-system", filePath: "./data.json" });
+export const Ctx = async (): Promise<ICtx> => {
+  const keyValueDb = await getKeyValueDb();
   const todoListDb = TodoListDb({ t: "key-value-db", keyValueDb });
   return {
     keyValueDb,
     todoListDb,
   };
+};
+
+const getKeyValueDb = async (): Promise<IKeyValueDb> => {
+  const writePermission = await Deno.permissions.query({ name: "write" });
+  const readPermission = await Deno.permissions.query({ name: "read" });
+  if (
+    writePermission.state === "granted" &&
+    readPermission.state === "granted"
+  ) {
+    console.log("using file-system key-value db");
+    return KeyValueDb({ t: "file-system", filePath: "./data.json" });
+  }
+  console.log("using in-memory key-value db");
+  return KeyValueDb({ t: "hash-map", hashMap: new Map() });
 };

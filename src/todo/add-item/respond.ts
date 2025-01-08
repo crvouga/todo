@@ -67,7 +67,7 @@ const viewForm = () => html`
         <fieldset>
           <label>
             List
-            <select type="text" name="list">
+            <select type="text" name="list" disabled>
               <option>List</option>
             </select>
           </label>

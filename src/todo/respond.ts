@@ -5,6 +5,7 @@ import { mapOk, unwrapOr } from "../core/result.ts";
 import { ICtx } from "../ctx.ts";
 import { href } from "../route.ts";
 import { respondDoc } from "../ui/doc.ts";
+import { viewTopBar } from "../ui/top-bar.ts";
 import { Route } from "./route.ts";
 import { TodoListId } from "./todo-list/todo-list-id.ts";
 import { TodoList } from "./todo-list/todo-list.ts";
@@ -99,21 +100,8 @@ const respondPostCreateList: typeof respond = async (input) => {
   }
 };
 
-const viewHeader = (input: { end?: string }) => {
-  return html` <header>
-    <nav>
-      <ul>
-        <li><strong>Todo</strong></li>
-      </ul>
-      <ul>
-        ${input.end}
-      </ul>
-    </nav>
-  </header>`;
-};
-
 const viewIndex = (input: { lists: TodoList[] }) => html`
-  ${viewHeader({ end: html`<li>${viewCreateNewButton()}</li>` })}
+  ${viewTopBar({ end: html`<li>${viewCreateNewButton()}</li>` })}
   <main>
     <section>
       <h1>Lists</h1>
@@ -131,7 +119,6 @@ const viewCreateNewButton = () => html`
 `;
 
 const viewListCard = (input: { list: TodoList }) => {
-  console.log(input);
   return html`
     <article>
       <h2>${input.list.name}</h2>
@@ -153,7 +140,7 @@ const viewListCard = (input: { list: TodoList }) => {
 };
 
 const viewListCreate = () => html`
-  ${viewHeader({})}
+  ${viewTopBar({})}
   <main>
     <section>
       <h1>Create New List</h1>

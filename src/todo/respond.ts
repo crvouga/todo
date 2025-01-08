@@ -1,7 +1,7 @@
 import { html } from "../core/html.ts";
 import { redirect } from "../core/http/redirect.ts";
-import { unwrapOr } from "../core/result.ts";
-import { mapOk } from "../core/result.ts";
+import { pipe } from "../core/pipe.ts";
+import { mapOk, unwrapOr } from "../core/result.ts";
 import { ICtx } from "../ctx.ts";
 import { href } from "../route.ts";
 import { respondDoc } from "../ui/doc.ts";
@@ -16,9 +16,10 @@ export const respond = async (input: {
 }): Promise<Response> => {
   switch (input.route.t) {
     case "index": {
-      const lists = unwrapOr(
-        mapOk(await input.ctx.todoListDb.list(), (v) => v.items),
-        []
+      const lists = pipe(
+        await input.ctx.todoListDb.list(),
+        (_) => mapOk(_, (v) => v.items),
+        (_) => unwrapOr(_, [])
       );
 
       return respondDoc({ body: viewIndex({ lists }) });

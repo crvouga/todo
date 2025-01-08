@@ -49,7 +49,9 @@ const toUrl = (base: URL, route: Route): URL => {
     }
     case "list-view": {
       const url = new URL("/todo/list-view", base);
-      url.searchParams.set("id", route.listId || "");
+      if (route.listId) {
+        url.searchParams.set("id", route.listId);
+      }
       return url;
     }
     case "list-create": {

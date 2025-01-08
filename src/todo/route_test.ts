@@ -15,8 +15,8 @@ Deno.test("from and to url", () => {
       listId: "1",
     },
     {
-      t: "list-read",
-      listId: "1",
+      t: "list-view",
+      listId: null,
     },
   ];
 

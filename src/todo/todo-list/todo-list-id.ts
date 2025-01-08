@@ -8,6 +8,9 @@ const encode = (id: TodoListId): string => {
 
 const decode = (id: unknown): TodoListId | null => {
   if (typeof id === "string") {
+    if (id.trim().length === 0) {
+      return null;
+    }
     return id as TodoListId;
   }
   return null;

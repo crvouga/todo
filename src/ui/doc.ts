@@ -28,9 +28,11 @@ export const viewDoc = (input: { body: string; preload: string[] }) => html`
 
             addLoadingState(form);
 
-            window.addEventListener("load", () => removeLoadingState(form), {
-              once: true,
-            });
+            const onDone = () => {
+              removeLoadingState(form);
+            };
+
+            window.addEventListener("unload", onDone, { once: true });
           }
         });
 

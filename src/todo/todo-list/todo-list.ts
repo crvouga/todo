@@ -1,3 +1,5 @@
+import { safeJsonParse } from "../../core/json.ts";
+import { isErr } from "../../core/result.ts";
 import { TodoListId } from "./todo-list-id.ts";
 
 export type TodoList = {
@@ -14,27 +16,30 @@ const encode = (todoList: TodoList): string => {
 };
 
 const decode = (todoList: string): TodoList | null => {
-  try {
-    const unknown: unknown = JSON.parse(todoList);
+  const parsed = safeJsonParse(todoList);
 
-    if (
-      typeof unknown === "object" &&
-      unknown !== null &&
-      "id" in unknown &&
-      TodoListId.is(unknown.id) &&
-      "name" in unknown &&
-      typeof unknown.name === "string"
-    ) {
-      const todoList: TodoList = {
-        id: unknown.id,
-        name: unknown.name,
-      };
-      return todoList;
-    }
-    return null;
-  } catch {
+  if (isErr(parsed)) {
     return null;
   }
+
+  const unknown = parsed.v;
+
+  if (
+    typeof unknown === "object" &&
+    unknown !== null &&
+    "id" in unknown &&
+    TodoListId.is(unknown.id) &&
+    "name" in unknown &&
+    typeof unknown.name === "string"
+  ) {
+    const todoList: TodoList = {
+      id: unknown.id,
+      name: unknown.name,
+    };
+    return todoList;
+  }
+
+  return null;
 };
 
 export const TodoList = {

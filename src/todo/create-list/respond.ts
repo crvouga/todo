@@ -19,7 +19,11 @@ const respond = async (input: {
     }
 
     default: {
-      return respondDoc({ body: viewListCreate() });
+      const preload = [href({ t: "todo", c: { t: "index" } })];
+      return respondDoc({
+        preload,
+        body: viewListCreate(),
+      });
     }
   }
 };

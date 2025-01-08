@@ -6,6 +6,7 @@ import { ICtx } from "../ctx.ts";
 import { href } from "../route.ts";
 import { respondDoc } from "../ui/doc.ts";
 import { Route } from "./route.ts";
+import { TodoListId } from "./todo-list/todo-list-id.ts";
 import { TodoList } from "./todo-list/todo-list.ts";
 
 export const respond = async (input: {
@@ -42,11 +43,21 @@ export const respond = async (input: {
         },
       });
     }
-    case "list-read": {
-      return new Response("list-read", {
-        headers: {
-          "content-type": "text/plain",
-        },
+
+    case "list-view": {
+      if (!input.route.listId) {
+        return new Response("No id passed", {
+          headers: {
+            "content-type": "text/plain",
+          },
+        });
+      }
+      const list = unwrapOr(
+        await input.ctx.todoListDb.get(input.route.listId),
+        null
+      );
+      return new Response(JSON.stringify(list, null, 4), {
+        headers: { "content-type": "text/plain" },
       });
     }
   }
@@ -57,7 +68,7 @@ const respondPostCreateList: typeof respond = async (input) => {
   const name = formData.get("name")?.toString();
 
   const listNew: TodoList = {
-    id: Math.random().toString(36).slice(2),
+    id: TodoListId.generate(),
     name: name ?? "",
   };
 
@@ -101,39 +112,40 @@ const viewHeader = (input: { end?: string }) => {
 };
 
 const viewIndex = (input: { lists: TodoList[] }) => html`
-  ${viewHeader({
-    end: html`<li>
-      <a
-        role="button"
-        href="${href({
-          t: "todo",
-          c: { t: "list-create" },
-        })}"
-      >
-        Create New
-      </a>
-    </li>`,
-  })}
+  ${viewHeader({ end: html`<li>${viewCreateNewButton()}</li>` })}
   <main>
     <section>
       <h1>Lists</h1>
     </section>
     <section>
-      ${input.lists
-        .map((list) => {
-          return html`
-            <article>
-              <h2>${list.name}</h2>
-              <div>
-                <a role="button" class="outline">View</a>
-                <a role="button" class="outline">Delete</a>
-              </div>
-            </article>
-          `;
-        })
-        .join("")}
+      ${input.lists.map((list) => viewListCard({ list })).join("")}
     </section>
   </main>
+`;
+
+const viewCreateNewButton = () => html`
+  <a role="button" href="${href({ t: "todo", c: { t: "list-create" } })}">
+    Create New
+  </a>
+`;
+
+const viewListCard = (input: { list: TodoList }) => html`
+  <article>
+    <h2>${input.list.name}</h2>
+    <div>
+      <a
+        role="button"
+        class="outline"
+        href="${href({
+          t: "todo",
+          c: { t: "list-view", listId: input.list.id },
+        })}"
+      >
+        View
+      </a>
+      <a role="button" class="outline">Delete</a>
+    </div>
+  </article>
 `;
 
 const viewListCreate = () => html`

@@ -1,5 +1,7 @@
+import { TodoListId } from "./todo-list-id.ts";
+
 export type TodoList = {
-  id: string;
+  id: TodoListId;
   name: string;
 };
 

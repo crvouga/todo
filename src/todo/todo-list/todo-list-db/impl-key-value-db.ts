@@ -55,6 +55,21 @@ export const TodoListDb = (config: Config): ITodoListDb => {
         offset: 0,
       });
     },
+    async get(id) {
+      const got = await keyValueDb.get(id);
+
+      if (isErr(got)) {
+        return got;
+      }
+
+      const decoded = TodoList.decode(got.v ?? "");
+
+      if (!decoded) {
+        return Ok(null);
+      }
+
+      return Ok(decoded);
+    },
     async put(todoList) {
       const allIds = await getAllIds();
       const allIdsNew = new Set(allIds);

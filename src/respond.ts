@@ -1,6 +1,6 @@
 import { html, responseHtml } from "./core/html.ts";
 import { ICtx } from "./ctx.ts";
-import { Route } from "./route.ts";
+import { Route, href } from "./route.ts";
 import * as Todo from "./todo/index.ts";
 import { viewDoc } from "./ui/doc.ts";
 
@@ -24,7 +24,7 @@ const viewIndex = () => html`
   <main>
     <section>
       <h1>Not found</h1>
-      <a role="button" href="${Route.toHref({ t: "todo", c: { t: "index" } })}">
+      <a role="button" href="${href({ t: "todo", c: { t: "index" } })}">
         Go to todo
       </a>
     </section>

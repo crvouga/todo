@@ -1,10 +1,12 @@
+import { TodoListId } from "./todo-list/todo-list-id.ts";
+
 export type Route =
   | {
       t: "index";
     }
   | {
-      t: "list-read";
-      listId: string | null;
+      t: "list-view";
+      listId: TodoListId | null;
     }
   | {
       t: "list-edit";
@@ -24,8 +26,8 @@ const fromUrl = (url: URL): Route | null => {
     }
     case "/todo/list-view": {
       return {
-        t: "list-read",
-        listId: url.searchParams.get("id") || null,
+        t: "list-view",
+        listId: TodoListId.decode(url.searchParams.get("id")),
       };
     }
     case "/todo/list-edit": {
@@ -45,10 +47,10 @@ const toUrl = (base: URL, route: Route): URL => {
     case "index": {
       return new URL("/todo", base);
     }
-    case "list-read": {
-      const params = new URLSearchParams();
-      params.set("id", route.listId || "");
-      return new URL(`/todo/list-view?${params}`, base);
+    case "list-view": {
+      const url = new URL("/todo/list-view", base);
+      url.searchParams.set("id", route.listId || "");
+      return url;
     }
     case "list-create": {
       return new URL(`/todo/list-create`, base);

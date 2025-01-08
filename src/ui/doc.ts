@@ -37,6 +37,17 @@ export const viewDoc = (input: { body: string; preload: string[] }) => html`
                 submitButton.setAttribute("disabled", "true");
               }, 0);
             }
+
+            const onFormSubmitSuccess = () => {
+              if (submitButton) {
+                submitButton.removeAttribute("aria-busy");
+                submitButton.removeAttribute("disabled");
+              }
+            };
+
+            window.addEventListener("beforeunload", onFormSubmitSuccess, {
+              once: true,
+            });
           }
         });
 

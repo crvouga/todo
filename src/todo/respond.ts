@@ -9,6 +9,7 @@ import { AddListItem } from "./add-item/respond.ts";
 import { CreateList } from "./create-list/respond.ts";
 import { Route } from "./route.ts";
 import { TodoItem } from "./todo-item/todo-item.ts";
+import { TodoListId } from "./todo-list/todo-list-id.ts";
 import { TodoList } from "./todo-list/todo-list.ts";
 
 export const respond = async (input: {
@@ -103,7 +104,9 @@ const viewSingle = (input: { list: TodoList | null; items: TodoItem[] }) => {
       </main>`;
   }
   return html`
-    ${viewTopBar({ end: html`<li>${viewAddNewItem()}</li>` })}
+    ${viewTopBar({
+      end: html`<li>${viewAddNewItem({ listId: input.list.id })}</li>`,
+    })}
     <main>
       <section>
         <h1>${input.list.name}</h1>
@@ -112,8 +115,14 @@ const viewSingle = (input: { list: TodoList | null; items: TodoItem[] }) => {
   `;
 };
 
-const viewAddNewItem = () => html`
-  <a role="button" href="${href({ t: "todo", c: { t: "list-create" } })}">
+const viewAddNewItem = (input: { listId: TodoListId }) => html`
+  <a
+    role="button"
+    href="${href({
+      t: "todo",
+      c: { t: "list-item-add", listId: input.listId },
+    })}"
+  >
     Add New Item
   </a>
 `;

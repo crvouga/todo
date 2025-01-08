@@ -20,10 +20,8 @@ const respond = async (input: {
 
     default: {
       const preload = [href({ t: "todo", c: { t: "index" } })];
-      return respondDoc({
-        preload,
-        body: viewListCreate(),
-      });
+
+      return respondDoc({ preload, body: viewForm() });
     }
   }
 };
@@ -66,7 +64,7 @@ const respondPost: typeof respond = async (input) => {
   }
 };
 
-const viewListCreate = () => html`
+const viewForm = () => html`
   ${viewTopBar({})}
   <main>
     <section>

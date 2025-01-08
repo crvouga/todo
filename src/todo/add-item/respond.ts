@@ -18,7 +18,7 @@ const respond = async (input: {
     }
 
     default: {
-      return respondDoc({ body: viewListCreate() });
+      return respondDoc({ body: viewForm() });
     }
   }
 };
@@ -58,19 +58,27 @@ const respondPost: typeof respond = async (input) => {
   }
 };
 
-const viewListCreate = () => html`
+const viewForm = () => html`
   ${viewTopBar({})}
   <main>
     <section>
-      <h1>Create New List</h1>
+      <h1>Add New Item</h1>
       <form method="POST">
         <fieldset>
           <label>
-            Name
-            <input type="text" name="name" required />
+            List
+            <select type="text" name="list">
+              <option>List</option>
+            </select>
           </label>
         </fieldset>
-        <button type="submit">Create</button>
+        <fieldset>
+          <label>
+            Label
+            <input type="text" name="label" required />
+          </label>
+        </fieldset>
+        <button type="submit">Add</button>
       </form>
     </section>
   </main>

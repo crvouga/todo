@@ -6,7 +6,11 @@ export type TodoList = {
 };
 
 const encode = (todoList: TodoList): string => {
-  return JSON.stringify(todoList);
+  try {
+    return JSON.stringify(todoList);
+  } catch (_e) {
+    return "";
+  }
 };
 
 const decode = (todoList: string): TodoList | null => {

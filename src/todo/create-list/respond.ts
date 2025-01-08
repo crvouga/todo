@@ -52,7 +52,10 @@ const respondPost: typeof respond = async (input) => {
       return redirect(
         href({
           t: "todo",
-          c: { t: "index" },
+          c: {
+            t: "list-view",
+            listId: listNew.id,
+          },
         })
       );
     }

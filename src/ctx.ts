@@ -9,6 +9,14 @@ export type ICtx = {
   todoListDb: ITodoListDb;
 };
 
+const isProd = Boolean(Deno.env.get("DENO_DEPLOYMENT_ID"));
+
+if (isProd) {
+  console.log("running in production");
+} else {
+  console.log("running in development");
+}
+
 export const Ctx = async (): Promise<ICtx> => {
   const keyValueDb = await getKeyValueDb();
   const todoListDb = await TodoListDb({ t: "key-value-db", keyValueDb });
@@ -28,7 +36,7 @@ const getKeyValueDb = async (): Promise<IKeyValueDb> => {
     console.log("using file-system key-value db");
     return KeyValueDb({ t: "file-system", filePath: "./data.json" });
   }
-  if (Deno.env.get("DENO_ENV") === "production") {
+  if (isProd) {
     console.log("using deno-kv key-value db");
     return KeyValueDb({ t: "deno-kv" });
   }

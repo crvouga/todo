@@ -48,15 +48,27 @@ export const respond = async (input: {
     }
 
     case "list-view": {
+      const preload = [
+        href({
+          t: "todo",
+          c: { t: "list-item-add", listId: input.route.listId },
+        }),
+        href({ t: "todo", c: { t: "index" } }),
+      ];
+
       if (!input.route.listId) {
-        return respondDoc({ body: viewSingle({ list: null, items: [] }) });
+        return respondDoc({
+          preload,
+          body: viewSingle({ list: null, items: [] }),
+        });
       }
 
       const list = unwrapOr(
         await input.ctx.todoListDb.get(input.route.listId),
         null
       );
-      return respondDoc({ body: viewSingle({ list, items: [] }) });
+
+      return respondDoc({ preload, body: viewSingle({ list, items: [] }) });
     }
 
     case "list-item-add": {

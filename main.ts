@@ -4,7 +4,7 @@ import { Route } from "./src/route.ts";
 
 const PORT = parseInt(Deno.env.get("PORT") ?? "8000");
 
-const ctx = Ctx();
+const ctx = await Ctx();
 
 Deno.serve({ port: PORT }, async (req) => {
   const url = new URL(req.url);

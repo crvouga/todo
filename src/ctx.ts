@@ -28,6 +28,10 @@ const getKeyValueDb = async (): Promise<IKeyValueDb> => {
     console.log("using file-system key-value db");
     return KeyValueDb({ t: "file-system", filePath: "./data.json" });
   }
+  if (Deno.env.get("DENO_ENV") === "production") {
+    console.log("using deno-kv key-value db");
+    return KeyValueDb({ t: "deno-kv" });
+  }
   console.log("using in-memory key-value db");
   return KeyValueDb({ t: "hash-map", hashMap: new Map() });
 };

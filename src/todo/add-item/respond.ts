@@ -4,15 +4,13 @@ import { ICtx } from "../../ctx.ts";
 import { href } from "../../route.ts";
 import { respondDoc } from "../../ui/doc.ts";
 import { viewTopBar } from "../../ui/top-bar.ts";
-import { Route } from "../route.ts";
 import { TodoListId } from "../todo-list/todo-list-id.ts";
 import { TodoList } from "../todo-list/todo-list.ts";
 
 const respond = async (input: {
   ctx: ICtx;
   req: Request;
-  route: Route;
-  listId: TodoListId;
+  listId: TodoListId | null;
 }): Promise<Response> => {
   switch (input.req.method) {
     case "POST": {

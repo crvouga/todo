@@ -1,6 +1,6 @@
 import { html } from "../core/html.ts";
 
-export const viewDoc = (input: { body: string }) => html`
+export const viewDoc = (input: { body: string; preload: string[] }) => html`
   <html>
     <head>
       <title>Todo</title>
@@ -13,16 +13,30 @@ export const viewDoc = (input: { body: string }) => html`
         content="width=device-width, initial-scale=1, shrink-to-fit=no"
       />
       <meta charset="utf-8" />
+      ${input.preload
+        .map((url) => html`<link rel="prefetch" href=${url} as="document" />`)
+        .join("")}
       <script>
-        document.addEventListener("click", (event) => {
-          if (
-            event.target.tagName === "BUTTON" &&
-            event.target.type === "submit"
-          ) {
-            event.target.setAttribute("aria-busy", "true");
-            setTimeout(() => {
-              event.target.setAttribute("disabled", "true");
-            }, 0);
+        document.addEventListener("submit", (event) => {
+          const form = event.target;
+          if (form.tagName === "FORM") {
+            const submitButton = form.querySelector("button[type='submit']");
+
+            if (!form.checkValidity()) {
+              event.preventDefault();
+              if (submitButton) {
+                submitButton.removeAttribute("aria-busy");
+                submitButton.removeAttribute("disabled");
+              }
+              return;
+            }
+
+            if (submitButton) {
+              submitButton.setAttribute("aria-busy", "true");
+              setTimeout(() => {
+                submitButton.setAttribute("disabled", "true");
+              }, 0);
+            }
           }
         });
 
@@ -45,8 +59,8 @@ export const viewDoc = (input: { body: string }) => html`
   </html>
 `;
 
-export const respondDoc = (input: { body: string }) => {
-  return new Response(viewDoc(input), {
+export const respondDoc = (input: { body: string; preload?: string[] }) => {
+  return new Response(viewDoc({ ...input, preload: input.preload ?? [] }), {
     headers: {
       "content-type": "text/html",
     },

@@ -5,6 +5,7 @@ import { ICtx } from "../ctx.ts";
 import { href } from "../route.ts";
 import { respondDoc } from "../ui/doc.ts";
 import { viewTopBar } from "../ui/top-bar.ts";
+import { AddListItem } from "./add-item/respond.ts";
 import { CreateList } from "./create-list/respond.ts";
 import { Route } from "./route.ts";
 import { TodoItem } from "./todo-item/todo-item.ts";
@@ -23,7 +24,15 @@ export const respond = async (input: {
         (_) => unwrapOr(_, [])
       );
 
-      return respondDoc({ body: viewIndex({ lists }) });
+      const preload = lists.map((list) =>
+        href({ t: "todo", c: { t: "list-view", listId: list.id } })
+      );
+      preload.push(href({ t: "todo", c: { t: "list-create" } }));
+
+      return respondDoc({
+        body: viewIndex({ lists }),
+        preload,
+      });
     }
 
     case "list-create": {
@@ -48,6 +57,10 @@ export const respond = async (input: {
         null
       );
       return respondDoc({ body: viewSingle({ list, items: [] }) });
+    }
+
+    case "list-item-add": {
+      return AddListItem.respond({ ...input, listId: input.route.listId });
     }
   }
 };

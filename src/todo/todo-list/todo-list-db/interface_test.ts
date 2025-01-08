@@ -5,15 +5,15 @@ import { TodoList } from "../todo-list.ts";
 import { Config, TodoListDb } from "./impl.ts";
 import { Ok } from "../../../core/result.ts";
 
-const Fixture = (config: Config) => {
-  const todoListDb = TodoListDb(config);
+const Fixture = async (config: Config) => {
+  const todoListDb = await TodoListDb(config);
   return {
     todoListDb,
   };
 };
 
-const Fixtures = () => {
-  const keyValueDb = KeyValueDb({ t: "hash-map", hashMap: new Map() });
+const Fixtures = async () => {
+  const keyValueDb = await KeyValueDb({ t: "hash-map", hashMap: new Map() });
   const configs: Config[] = [];
 
   configs.push({
@@ -21,11 +21,11 @@ const Fixtures = () => {
     keyValueDb,
   });
 
-  return configs.map(Fixture);
+  return Promise.all(configs.map(Fixture));
 };
 
 Deno.test("put and get", async () => {
-  for (const f of Fixtures()) {
+  for (const f of await Fixtures()) {
     const todoList: TodoList = {
       id: TodoListId.generate(),
       name: "todo-list",
@@ -42,7 +42,7 @@ Deno.test("put and get", async () => {
 });
 
 Deno.test("list", async () => {
-  for (const f of Fixtures()) {
+  for (const f of await Fixtures()) {
     const expected: TodoList[] = [
       {
         id: TodoListId.generate(),

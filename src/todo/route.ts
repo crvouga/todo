@@ -14,6 +14,10 @@ export type Route =
     }
   | {
       t: "list-create";
+    }
+  | {
+      t: "list-item-add";
+      listId: TodoListId | null;
     };
 
 const fromUrl = (url: URL): Route | null => {
@@ -34,6 +38,12 @@ const fromUrl = (url: URL): Route | null => {
       return {
         t: "list-edit",
         listId: url.searchParams.get("id") || null,
+      };
+    }
+    case "/todo/list-item-add": {
+      return {
+        t: "list-item-add",
+        listId: TodoListId.decode(url.searchParams.get("id")),
       };
     }
     default: {
@@ -61,6 +71,13 @@ const toUrl = (base: URL, route: Route): URL => {
       const params = new URLSearchParams();
       params.set("id", route.listId || "");
       return new URL(`/todo/list-edit?${params}`, base);
+    }
+    case "list-item-add": {
+      const url = new URL("/todo/list-item-add", base);
+      if (route.listId) {
+        url.searchParams.set("id", route.listId);
+      }
+      return url;
     }
   }
 };

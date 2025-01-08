@@ -22,6 +22,17 @@ export const viewDoc = (input: { body: string }) => html`
             }, 0);
           }
         });
+
+        function swapInnerHTML(selector, url) {
+          fetch(url)
+            .then((res) => res.text())
+            .then((html) => {
+              const element = document.querySelector(selector);
+              if (element) {
+                element.innerHTML = html;
+              }
+            });
+        }
       </script>
     </head>
 

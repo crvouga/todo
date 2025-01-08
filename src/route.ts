@@ -50,7 +50,8 @@ const toHref = (route: Route): string => {
 
 export const href = (route: Route): string => {
   const dummyBase = new URL("http://localhost");
-  return toUrl(dummyBase, route).pathname;
+  const url = toUrl(dummyBase, route);
+  return `${url.pathname}${url.search}`;
 };
 
 export const Route = {

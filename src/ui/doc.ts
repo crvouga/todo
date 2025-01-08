@@ -8,7 +8,10 @@ export const viewDoc = (input: { body: string }) => html`
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.min.css"
       />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no"
+      />
       <meta charset="utf-8" />
       <script>
         document.addEventListener("click", (event) => {

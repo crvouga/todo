@@ -130,24 +130,27 @@ const viewCreateNewButton = () => html`
   </a>
 `;
 
-const viewListCard = (input: { list: TodoList }) => html`
-  <article>
-    <h2>${input.list.name}</h2>
-    <div>
-      <a
-        role="button"
-        class="outline"
-        href="${href({
-          t: "todo",
-          c: { t: "list-view", listId: input.list.id },
-        })}"
-      >
-        View
-      </a>
-      <a role="button" class="outline">Delete</a>
-    </div>
-  </article>
-`;
+const viewListCard = (input: { list: TodoList }) => {
+  console.log(input);
+  return html`
+    <article>
+      <h2>${input.list.name}</h2>
+      <div>
+        <a
+          role="button"
+          class="outline"
+          href="${href({
+            t: "todo",
+            c: { t: "list-view", listId: input.list.id },
+          })}"
+        >
+          View
+        </a>
+        <a role="button" class="outline">Delete</a>
+      </div>
+    </article>
+  `;
+};
 
 const viewListCreate = () => html`
   ${viewHeader({})}

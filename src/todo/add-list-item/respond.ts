@@ -12,6 +12,7 @@ const respond = async (input: {
   ctx: ICtx;
   req: Request;
   route: Route;
+  listId: TodoListId;
 }): Promise<Response> => {
   switch (input.req.method) {
     case "POST": {
@@ -77,6 +78,6 @@ const viewListCreate = () => html`
   </main>
 `;
 
-export const CreateList = {
+export const AddListItem = {
   respond,
 };

@@ -27,19 +27,22 @@ export const Ctx = async (): Promise<ICtx> => {
 };
 
 const getKeyValueDb = async (): Promise<IKeyValueDb> => {
-  const writePermission = await Deno.permissions.query({ name: "write" });
-  const readPermission = await Deno.permissions.query({ name: "read" });
-  if (
-    writePermission.state === "granted" &&
-    readPermission.state === "granted"
-  ) {
-    console.log("using file-system key-value db");
-    return KeyValueDb({ t: "file-system", filePath: "./data.json" });
-  }
   if (isProd) {
     console.log("using deno-kv key-value db");
     return KeyValueDb({ t: "deno-kv" });
   }
+
+  if (await isAllowedToUseFileSystem()) {
+    console.log("using file-system key-value db");
+    return KeyValueDb({ t: "file-system", filePath: "./data.json" });
+  }
+
   console.log("using in-memory key-value db");
   return KeyValueDb({ t: "hash-map", hashMap: new Map() });
+};
+
+const isAllowedToUseFileSystem = async () => {
+  const write = await Deno.permissions.query({ name: "write" });
+  const read = await Deno.permissions.query({ name: "read" });
+  return write.state === "granted" && read.state === "granted";
 };

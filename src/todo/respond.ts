@@ -1,13 +1,13 @@
 import { html } from "../core/html.ts";
-import { redirect } from "../core/http/redirect.ts";
 import { pipe } from "../core/pipe.ts";
 import { mapOk, unwrapOr } from "../core/result.ts";
 import { ICtx } from "../ctx.ts";
 import { href } from "../route.ts";
 import { respondDoc } from "../ui/doc.ts";
 import { viewTopBar } from "../ui/top-bar.ts";
+import { CreateList } from "./create-list/respond.ts";
 import { Route } from "./route.ts";
-import { TodoListId } from "./todo-list/todo-list-id.ts";
+import { TodoItem } from "./todo-item/todo-item.ts";
 import { TodoList } from "./todo-list/todo-list.ts";
 
 export const respond = async (input: {
@@ -27,15 +27,7 @@ export const respond = async (input: {
     }
 
     case "list-create": {
-      switch (input.req.method) {
-        case "POST": {
-          return await respondPostCreateList(input);
-        }
-
-        default: {
-          return respondDoc({ body: viewListCreate() });
-        }
-      }
+      return CreateList.respond(input);
     }
 
     case "list-edit": {
@@ -48,54 +40,14 @@ export const respond = async (input: {
 
     case "list-view": {
       if (!input.route.listId) {
-        return new Response("No id passed", {
-          headers: {
-            "content-type": "text/plain",
-          },
-        });
+        return respondDoc({ body: viewSingle({ list: null, items: [] }) });
       }
+
       const list = unwrapOr(
         await input.ctx.todoListDb.get(input.route.listId),
         null
       );
-      return new Response(JSON.stringify(list, null, 4), {
-        headers: { "content-type": "text/plain" },
-      });
-    }
-  }
-};
-
-const respondPostCreateList: typeof respond = async (input) => {
-  const formData = await input.req.formData();
-  const name = formData.get("name")?.toString();
-
-  const listNew: TodoList = {
-    id: TodoListId.generate(),
-    name: name ?? "",
-  };
-
-  const put = await input.ctx.todoListDb.put(listNew);
-
-  switch (put.t) {
-    case "err": {
-      return new Response(String(put.v), {
-        status: 500,
-        headers: {
-          "content-type": "text/plain",
-        },
-      });
-    }
-    case "ok": {
-      return redirect(
-        href({
-          t: "todo",
-          c: { t: "index" },
-        })
-      );
-    }
-    default: {
-      const _check: never = put;
-      return _check;
+      return respondDoc({ body: viewSingle({ list, items: [] }) });
     }
   }
 };
@@ -115,6 +67,29 @@ const viewIndex = (input: { lists: TodoList[] }) => html`
 const viewCreateNewButton = () => html`
   <a role="button" href="${href({ t: "todo", c: { t: "list-create" } })}">
     Create New
+  </a>
+`;
+
+const viewSingle = (input: { list: TodoList | null; items: TodoItem[] }) => {
+  if (!input.list) {
+    return html` ${viewTopBar({})}
+      <main>
+        <section><h1>List not found</h1></section>
+      </main>`;
+  }
+  return html`
+    ${viewTopBar({ end: html`<li>${viewAddNewItem()}</li>` })}
+    <main>
+      <section>
+        <h1>${input.list.name}</h1>
+      </section>
+    </main>
+  `;
+};
+
+const viewAddNewItem = () => html`
+  <a role="button" href="${href({ t: "todo", c: { t: "list-create" } })}">
+    Add New Item
   </a>
 `;
 
@@ -138,21 +113,3 @@ const viewListCard = (input: { list: TodoList }) => {
     </article>
   `;
 };
-
-const viewListCreate = () => html`
-  ${viewTopBar({})}
-  <main>
-    <section>
-      <h1>Create New List</h1>
-      <form method="POST">
-        <fieldset>
-          <label>
-            Name
-            <input type="text" name="name" required />
-          </label>
-        </fieldset>
-        <button type="submit">Create</button>
-      </form>
-    </section>
-  </main>
-`;

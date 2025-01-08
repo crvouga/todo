@@ -10,7 +10,21 @@ export const viewDoc = (input: { body: string }) => html`
       />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <meta charset="utf-8" />
+      <script>
+        document.addEventListener("click", (event) => {
+          if (
+            event.target.tagName === "BUTTON" &&
+            event.target.type === "submit"
+          ) {
+            event.target.setAttribute("aria-busy", "true");
+            setTimeout(() => {
+              event.target.setAttribute("disabled", "true");
+            }, 0);
+          }
+        });
+      </script>
     </head>
+
     <body>
       ${input.body}
     </body>

@@ -17,6 +17,7 @@ Deno.serve({ port: PORT }, async (req) => {
       },
     });
   }
+  console.log(req.method, route);
   const res = await respond({
     ctx,
     route,

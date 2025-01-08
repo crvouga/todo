@@ -21,8 +21,13 @@ const generate = (): TodoListId => {
   return id as TodoListId;
 };
 
+const is = (id: unknown): id is TodoListId => {
+  return decode(id) !== null;
+};
+
 export const TodoListId = {
   encode,
   decode,
   generate,
+  is,
 };

@@ -11,7 +11,23 @@ const encode = (todoList: TodoList): string => {
 
 const decode = (todoList: string): TodoList | null => {
   try {
-    return JSON.parse(todoList);
+    const unknown: unknown = JSON.parse(todoList);
+
+    if (
+      typeof unknown === "object" &&
+      unknown !== null &&
+      "id" in unknown &&
+      TodoListId.is(unknown.id) &&
+      "name" in unknown &&
+      typeof unknown.name === "string"
+    ) {
+      const todoList: TodoList = {
+        id: unknown.id,
+        name: unknown.name,
+      };
+      return todoList;
+    }
+    return null;
   } catch {
     return null;
   }

@@ -1,5 +1,5 @@
 import { html } from "../../core/html.ts";
-import { redirect, redirectNoCache } from "../../core/http/redirect.ts";
+import { redirect } from "../../core/http/redirect.ts";
 import { isErr, unwrapOr } from "../../core/result.ts";
 import { ICtx } from "../../ctx.ts";
 import { href } from "../../route.ts";
@@ -31,7 +31,7 @@ const respond = async (input: {
         });
       }
 
-      return redirectNoCache(href({ t: "todo", c: { t: "index" } }));
+      return redirect(href({ t: "todo", c: { t: "index" } }, true));
     }
 
     default: {

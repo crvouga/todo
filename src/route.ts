@@ -48,9 +48,14 @@ const toHref = (route: Route): string => {
   return toUrl(dummyBase, route).pathname;
 };
 
-export const href = (route: Route): string => {
+export const href = (route: Route, shouldCacheBust?: boolean): string => {
   const dummyBase = new URL("http://localhost");
   const url = toUrl(dummyBase, route);
+
+  if (shouldCacheBust) {
+    url.searchParams.set("cache-bust", String(Math.random()));
+  }
+
   return `${url.pathname}${url.search}`;
 };
 

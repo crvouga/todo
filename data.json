@@ -1,3 +1,7 @@
 {
-  "todo-lists/all-ids": "[]"
+  "todo-lists/all-ids": "[\"kzgk7zofhu\"]",
+  "todo-lists/kzgk7zofhu": "{\"id\":\"kzgk7zofhu\",\"name\":\"123\"}",
+  "todo-items/all-ids": "[\"ti57onch2z8\",\"y50f0ufetud\"]",
+  "todo-items/ti57onch2z8": "{\"id\":\"ti57onch2z8\",\"label\":\"123\",\"listId\":\"kzgk7zofhu\"}",
+  "todo-items/y50f0ufetud": "{\"id\":\"y50f0ufetud\",\"label\":\"123\",\"listId\":\"kzgk7zofhu\"}"
 }

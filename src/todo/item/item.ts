@@ -1,7 +1,7 @@
 import { safeJsonParse } from "../../core/json.ts";
 import { isErr } from "../../core/result.ts";
-import { TodoListId } from "../todo-list/todo-list-id.ts";
-import { TodoItemId } from "./todo-item-id.ts";
+import { TodoListId } from "../list/list-id.ts";
+import { TodoItemId } from "./item-id.ts";
 
 export type TodoItem = {
   listId: TodoListId;

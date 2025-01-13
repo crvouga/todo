@@ -1,12 +1,12 @@
 import { assertEquals } from "jsr:@std/assert";
 import { Route } from "./route.ts";
-import { TodoListId } from "./todo-list/todo-list-id.ts";
+import { TodoListId } from "./list/list-id.ts";
 
 Deno.test("from and to url", () => {
   const base = new URL("http://localhost");
   const routes: Route[] = [
     {
-      t: "index",
+      t: "list-view-all",
     },
     {
       t: "list-create",

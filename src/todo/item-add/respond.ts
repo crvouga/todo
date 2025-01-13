@@ -6,10 +6,10 @@ import { ICtx } from "../../ctx.ts";
 import { href } from "../../route.ts";
 import { respondDoc } from "../../ui/doc.ts";
 import { viewTopBar } from "../../ui/top-bar.ts";
-import { TodoItem } from "../todo-item/todo-item.ts";
-import { TodoListId } from "../todo-list/todo-list-id.ts";
-import { TodoItemId } from "../todo-item/todo-item-id.ts";
-import { TodoList } from "../todo-list/todo-list.ts";
+import { TodoItem } from "../item/item.ts";
+import { TodoListId } from "../list/list-id.ts";
+import { TodoItemId } from "../item/item-id.ts";
+import { TodoList } from "../list/list.ts";
 
 const respond = async (input: {
   ctx: ICtx;

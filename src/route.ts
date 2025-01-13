@@ -2,7 +2,7 @@ import * as Todo from "./todo/index.ts";
 
 export type Route =
   | {
-      t: "index";
+      t: "home";
     }
   | {
       t: "todo";
@@ -12,7 +12,7 @@ export type Route =
 const fromUrl_ = (url: URL): Route | null => {
   switch (url.pathname) {
     case "/": {
-      return { t: "index" };
+      return { t: "home" };
     }
     default: {
       return null;
@@ -34,7 +34,7 @@ const fromUrl = (url: URL): Route | null => {
 
 const toUrl = (base: URL, route: Route): URL => {
   switch (route.t) {
-    case "index": {
+    case "home": {
       return new URL("/", base);
     }
     case "todo": {

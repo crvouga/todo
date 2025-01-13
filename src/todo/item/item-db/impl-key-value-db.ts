@@ -1,7 +1,7 @@
 import { KeyValueDb } from "../../../core/key-value-db/index.ts";
 import { IKeyValueDb } from "../../../core/key-value-db/interface.ts";
 import { isErr, Ok } from "../../../core/result.ts";
-import { TodoItem } from "../todo-item.ts";
+import { TodoItem } from "../item.ts";
 import { ITodoItemDb } from "./interface.ts";
 
 export type Config = {

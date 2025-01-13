@@ -6,7 +6,7 @@ export const viewTopBar = (input: { end?: string }) => {
     <nav>
       <ul>
         <li>
-          <a href="${href({ t: "todo", c: { t: "index" } })}">
+          <a href="${href({ t: "todo", c: { t: "list-view-all" } })}">
             <strong>Todo</strong>
           </a>
         </li>

@@ -6,8 +6,8 @@ import { href } from "../../route.ts";
 import { respondDoc } from "../../ui/doc.ts";
 import { viewTopBar } from "../../ui/top-bar.ts";
 import { Route } from "../route.ts";
-import { TodoListId } from "../todo-list/todo-list-id.ts";
-import { TodoList } from "../todo-list/todo-list.ts";
+import { TodoListId } from "../list/list-id.ts";
+import { TodoList } from "../list/list.ts";
 
 const respond = async (input: {
   ctx: ICtx;
@@ -31,16 +31,16 @@ const respond = async (input: {
         });
       }
 
-      return redirect(href({ t: "todo", c: { t: "index" } }, true));
+      return redirect(href({ t: "todo", c: { t: "list-view-all" } }, true));
     }
 
     default: {
-      const preload = [href({ t: "todo", c: { t: "index" } })];
+      const preload = [href({ t: "todo", c: { t: "list-view-all" } })];
 
       const list = unwrapOr(await input.ctx.todoListDb.get(input.listId), null);
 
       if (!list) {
-        return redirect(href({ t: "todo", c: { t: "index" } }));
+        return redirect(href({ t: "todo", c: { t: "list-view-all" } }));
       }
 
       return respondDoc({ preload, body: viewForm({ list }) });
@@ -80,6 +80,6 @@ const viewForm = (input: { list: TodoList | null }): string => {
   `;
 };
 
-export const DeleteList = {
+export const ListDelete = {
   respond,
 };

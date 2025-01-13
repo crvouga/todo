@@ -1,7 +1,7 @@
 import { Paginated } from "../../../core/pagination.ts";
 import { Result } from "../../../core/result.ts";
-import { TodoListId } from "../todo-list-id.ts";
-import { TodoList } from "../todo-list.ts";
+import { TodoListId } from "../list-id.ts";
+import { TodoList } from "../list.ts";
 
 export type ITodoListDb = {
   put: (todoList: TodoList) => Promise<Result<null, Error>>;

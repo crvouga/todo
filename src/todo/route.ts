@@ -1,8 +1,8 @@
-import { TodoListId } from "./todo-list/todo-list-id.ts";
+import { TodoListId } from "./list/list-id.ts";
 
 export type Route =
   | {
-      t: "index";
+      t: "list-view-all";
     }
   | {
       t: "list-view";
@@ -20,14 +20,14 @@ export type Route =
       t: "list-create";
     }
   | {
-      t: "list-item-add";
+      t: "item-add";
       listId: TodoListId | null;
     };
 
 const fromUrl = (url: URL): Route | null => {
   switch (url.pathname) {
     case "/todo": {
-      return { t: "index" };
+      return { t: "list-view-all" };
     }
     case "/todo/list-create": {
       return { t: "list-create" };
@@ -50,9 +50,9 @@ const fromUrl = (url: URL): Route | null => {
         listId: TodoListId.decode(url.searchParams.get("id")),
       };
     }
-    case "/todo/list-item-add": {
+    case "/todo/item-add": {
       return {
-        t: "list-item-add",
+        t: "item-add",
         listId: TodoListId.decode(url.searchParams.get("id")),
       };
     }
@@ -64,7 +64,7 @@ const fromUrl = (url: URL): Route | null => {
 
 const toUrl = (base: URL, route: Route): URL => {
   switch (route.t) {
-    case "index": {
+    case "list-view-all": {
       return new URL("/todo", base);
     }
     case "list-view": {
@@ -89,8 +89,8 @@ const toUrl = (base: URL, route: Route): URL => {
       params.set("id", route.listId || "");
       return new URL(`/todo/list-edit?${params}`, base);
     }
-    case "list-item-add": {
-      const url = new URL("/todo/list-item-add", base);
+    case "item-add": {
+      const url = new URL("/todo/item-add", base);
       if (route.listId) {
         url.searchParams.set("id", route.listId);
       }

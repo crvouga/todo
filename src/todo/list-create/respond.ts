@@ -4,9 +4,9 @@ import { ICtx } from "../../ctx.ts";
 import { href } from "../../route.ts";
 import { respondDoc } from "../../ui/doc.ts";
 import { viewTopBar } from "../../ui/top-bar.ts";
+import { TodoListId } from "../list/list-id.ts";
+import { TodoList } from "../list/list.ts";
 import { Route } from "../route.ts";
-import { TodoListId } from "../todo-list/todo-list-id.ts";
-import { TodoList } from "../todo-list/todo-list.ts";
 
 const respond = async (input: {
   ctx: ICtx;
@@ -19,7 +19,7 @@ const respond = async (input: {
     }
 
     default: {
-      const preload = [href({ t: "todo", c: { t: "index" } })];
+      const preload = [href({ t: "todo", c: { t: "list-view-all" } })];
 
       return respondDoc({ preload, body: viewForm() });
     }
@@ -82,6 +82,6 @@ const viewForm = () => html`
   </main>
 `;
 
-export const CreateList = {
+export const ListCreate = {
   respond,
 };

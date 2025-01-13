@@ -9,8 +9,8 @@ export const respond = async (input: {
   req: Request;
 }): Promise<Response> => {
   switch (input.route?.t) {
-    case "index": {
-      return redirect(href({ t: "todo", c: { t: "index" } }));
+    case "home": {
+      return redirect(href({ t: "todo", c: { t: "list-view-all" } }));
     }
 
     case "todo": {

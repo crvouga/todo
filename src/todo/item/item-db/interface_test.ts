@@ -1,7 +1,7 @@
 import { assertEquals } from "jsr:@std/assert/equals";
 import { KeyValueDb } from "../../../core/key-value-db/impl.ts";
 import { Ok } from "../../../core/result.ts";
-import { TodoItem } from "../todo-item.ts";
+import { TodoItem } from "../item.ts";
 import { Config, TodoItemDb } from "./impl.ts";
 
 const Fixture = async (config: Config) => {

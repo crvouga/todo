@@ -1,7 +1,7 @@
 import { assertEquals } from "jsr:@std/assert/equals";
 import { KeyValueDb } from "../../../core/key-value-db/impl.ts";
-import { TodoListId } from "../todo-list-id.ts";
-import { TodoList } from "../todo-list.ts";
+import { TodoListId } from "../list-id.ts";
+import { TodoList } from "../list.ts";
 import { Config, TodoListDb } from "./impl.ts";
 import { Ok } from "../../../core/result.ts";
 

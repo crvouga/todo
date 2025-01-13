@@ -1,10 +1,7 @@
 import { IKeyValueDb, KeyValueDb } from "./core/key-value-db/index.ts";
-import { TodoItemDb } from "./todo/todo-item/todo-item-db/index.ts";
-import { ITodoItemDb } from "./todo/todo-item/todo-item-db/interface.ts";
-import {
-  ITodoListDb,
-  TodoListDb,
-} from "./todo/todo-list/todo-list-db/index.ts";
+import { TodoItemDb } from "./todo/item/item-db/index.ts";
+import { ITodoItemDb } from "./todo/item/item-db/interface.ts";
+import { ITodoListDb, TodoListDb } from "./todo/list/list-db/index.ts";
 
 export type ICtx = {
   keyValueDb: IKeyValueDb;

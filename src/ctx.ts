@@ -1,4 +1,6 @@
 import { IKeyValueDb, KeyValueDb } from "./core/key-value-db/index.ts";
+import { TodoItemDb } from "./todo/todo-item/todo-item-db/index.ts";
+import { ITodoItemDb } from "./todo/todo-item/todo-item-db/interface.ts";
 import {
   ITodoListDb,
   TodoListDb,
@@ -7,6 +9,7 @@ import {
 export type ICtx = {
   keyValueDb: IKeyValueDb;
   todoListDb: ITodoListDb;
+  todoItemDb: ITodoItemDb;
 };
 
 const isProd = Boolean(Deno.env.get("DENO_DEPLOYMENT_ID"));
@@ -20,9 +23,11 @@ if (isProd) {
 export const Ctx = async (): Promise<ICtx> => {
   const keyValueDb = await getKeyValueDb();
   const todoListDb = await TodoListDb({ t: "key-value-db", keyValueDb });
+  const todoItemDb = await TodoItemDb({ t: "key-value-db", keyValueDb });
   return {
     keyValueDb,
     todoListDb,
+    todoItemDb,
   };
 };
 

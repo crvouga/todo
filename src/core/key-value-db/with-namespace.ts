@@ -18,5 +18,9 @@ export const KeyValueDb = (config: Config): IKeyValueDb => {
       const namespacedKey = [...config.namespace, key].join(SEPARATOR);
       return config.instance.get(namespacedKey);
     },
+    zap(key) {
+      const namespacedKey = [...config.namespace, key].join(SEPARATOR);
+      return config.instance.zap(namespacedKey);
+    },
   };
 };

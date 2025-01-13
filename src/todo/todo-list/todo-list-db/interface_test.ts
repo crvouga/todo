@@ -13,13 +13,30 @@ const Fixture = async (config: Config) => {
 };
 
 const Fixtures = async () => {
-  const keyValueDb = await KeyValueDb({ t: "hash-map", hashMap: new Map() });
   const configs: Config[] = [];
 
   configs.push({
     t: "key-value-db",
-    keyValueDb,
+    keyValueDb: await KeyValueDb({
+      t: "hash-map",
+      hashMap: new Map(),
+    }),
   });
+
+  const TEST_FS = false;
+
+  if (TEST_FS) {
+    const filePath = "/tmp/todo-list-db.json";
+    try {
+      Deno.removeSync(filePath);
+    } catch (err) {
+      console.error(err);
+    }
+    configs.push({
+      t: "key-value-db",
+      keyValueDb: await KeyValueDb({ t: "file-system", filePath }),
+    });
+  }
 
   return Promise.all(configs.map(Fixture));
 };
@@ -80,6 +97,58 @@ Deno.test("list", async () => {
         items: expected,
         total: expected.length,
         limit: expected.length,
+        offset: 0,
+      })
+    );
+  }
+});
+
+Deno.test("zap", async () => {
+  for (const f of await Fixtures()) {
+    const todoList: TodoList = {
+      id: TodoListId.generate(),
+      name: "todo-list",
+    };
+    await f.todoListDb.put(todoList);
+
+    const before = await f.todoListDb.get(todoList.id);
+    const zapped = await f.todoListDb.zap(todoList.id);
+    const after = await f.todoListDb.get(todoList.id);
+
+    assertEquals(before, Ok(todoList));
+    assertEquals(zapped, Ok(null));
+    assertEquals(after, Ok(null));
+  }
+});
+
+Deno.test("zap and list", async () => {
+  for (const f of await Fixtures()) {
+    const todoList: TodoList = {
+      id: TodoListId.generate(),
+      name: "todo-list",
+    };
+    await f.todoListDb.put(todoList);
+
+    const before = await f.todoListDb.list();
+    const zapped = await f.todoListDb.zap(todoList.id);
+    const after = await f.todoListDb.list();
+
+    assertEquals(
+      before,
+      Ok({
+        items: [todoList],
+        total: 1,
+        limit: 1,
+        offset: 0,
+      })
+    );
+    assertEquals(zapped, Ok(null));
+    assertEquals(
+      after,
+      Ok({
+        items: [],
+        total: 0,
+        limit: 0,
         offset: 0,
       })
     );

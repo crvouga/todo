@@ -50,5 +50,22 @@ export const KeyValueDb = (config: Config): IKeyValueDb => {
         return Err(err);
       }
     },
+
+    async zap(key) {
+      try {
+        await delay(100);
+
+        const content = await Deno.readTextFile(filePath);
+        const data = JSON.parse(content);
+
+        delete data[key];
+
+        await Deno.writeTextFile(filePath, JSON.stringify(data, null, 2));
+
+        return Ok(null);
+      } catch (err) {
+        return Err(err);
+      }
+    },
   };
 };

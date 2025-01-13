@@ -19,5 +19,10 @@ export const KeyValueDb = (config: Config): IKeyValueDb => {
       await delay(config.delay ?? 0);
       return Ok(config.hashMap.get(key) ?? null);
     },
+    async zap(key) {
+      await delay(config.delay ?? 0);
+      config.hashMap.delete(key);
+      return Ok(null);
+    },
   };
 };

@@ -7,6 +7,7 @@ import { respondDoc } from "../ui/doc.ts";
 import { viewTopBar } from "../ui/top-bar.ts";
 import { AddListItem } from "./add-item/respond.ts";
 import { CreateList } from "./create-list/respond.ts";
+import { DeleteList } from "./delete-list/respond.ts";
 import { Route } from "./route.ts";
 import { TodoItem } from "./todo-item/todo-item.ts";
 import { TodoListId } from "./todo-list/todo-list-id.ts";
@@ -75,6 +76,10 @@ export const respond = async (input: {
     case "list-item-add": {
       return AddListItem.respond({ ...input, listId: input.route.listId });
     }
+
+    case "list-delete": {
+      return DeleteList.respond({ ...input, listId: input.route.listId });
+    }
   }
 };
 
@@ -142,7 +147,16 @@ const viewListCard = (input: { list: TodoList }) => {
         >
           View
         </a>
-        <a role="button" class="outline">Delete</a>
+        <a
+          role="button"
+          class="outline"
+          href="${href({
+            t: "todo",
+            c: { t: "list-delete", listId: input.list.id },
+          })}"
+        >
+          Delete
+        </a>
       </div>
     </article>
   `;

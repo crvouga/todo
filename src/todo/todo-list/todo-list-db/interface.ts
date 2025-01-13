@@ -6,5 +6,6 @@ import { TodoList } from "../todo-list.ts";
 export type ITodoListDb = {
   put: (todoList: TodoList) => Promise<Result<null, Error>>;
   list: () => Promise<Result<Paginated<TodoList>, Error>>;
-  get: (id: TodoListId) => Promise<Result<TodoList | null, Error>>;
+  get: (id: TodoListId | null) => Promise<Result<TodoList | null, Error>>;
+  zap: (id: TodoListId | null) => Promise<Result<null, Error>>;
 };

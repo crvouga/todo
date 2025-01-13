@@ -56,6 +56,9 @@ export const TodoListDb = async (config: Config): Promise<ITodoListDb> => {
       });
     },
     async get(id) {
+      if (!id) {
+        return Ok(null);
+      }
       const got = await keyValueDb.get(id);
 
       if (isErr(got)) {
@@ -76,6 +79,21 @@ export const TodoListDb = async (config: Config): Promise<ITodoListDb> => {
       allIdsNew.add(todoList.id);
       await keyValueDb.set(ALL_IDS_KEY, JSON.stringify([...allIdsNew]));
       return keyValueDb.set(todoList.id, TodoList.encode(todoList));
+    },
+    async zap(id) {
+      if (!id) {
+        return Ok(null);
+      }
+
+      const allIds = await getAllIds();
+
+      const allIdsNew = new Set(allIds);
+
+      allIdsNew.delete(id);
+
+      await keyValueDb.set(ALL_IDS_KEY, JSON.stringify([...allIdsNew]));
+
+      return keyValueDb.zap(id);
     },
   };
 };

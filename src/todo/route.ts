@@ -10,7 +10,11 @@ export type Route =
     }
   | {
       t: "list-edit";
-      listId: string | null;
+      listId: TodoListId | null;
+    }
+  | {
+      t: "list-delete";
+      listId: TodoListId | null;
     }
   | {
       t: "list-create";
@@ -34,10 +38,16 @@ const fromUrl = (url: URL): Route | null => {
         listId: TodoListId.decode(url.searchParams.get("id")),
       };
     }
+    case "/todo/list-delete": {
+      return {
+        t: "list-delete",
+        listId: TodoListId.decode(url.searchParams.get("id")),
+      };
+    }
     case "/todo/list-edit": {
       return {
         t: "list-edit",
-        listId: url.searchParams.get("id") || null,
+        listId: TodoListId.decode(url.searchParams.get("id")),
       };
     }
     case "/todo/list-item-add": {
@@ -59,6 +69,13 @@ const toUrl = (base: URL, route: Route): URL => {
     }
     case "list-view": {
       const url = new URL("/todo/list-view", base);
+      if (route.listId) {
+        url.searchParams.set("id", route.listId);
+      }
+      return url;
+    }
+    case "list-delete": {
+      const url = new URL("/todo/list-delete", base);
       if (route.listId) {
         url.searchParams.set("id", route.listId);
       }

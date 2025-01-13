@@ -22,5 +22,13 @@ export const KeyValueDb = async (_config: Config): Promise<IKeyValueDb> => {
       }
       return Err(new Error("Deno KV did not return a string value"));
     },
+    async zap(key) {
+      try {
+        await kv.delete([key]);
+        return Ok(null);
+      } catch (e) {
+        return Err(e);
+      }
+    },
   };
 };

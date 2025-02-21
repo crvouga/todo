@@ -37,6 +37,7 @@ const respond = async (input: {
   const items = pipe(
     await input.ctx.todoItemDb.list({
       listId: input.listId,
+      itemFilter: input.itemFilter,
     }),
     (result) => mapOk(result, (paginated) => paginated.items),
     (result) => unwrapOr(result, [])

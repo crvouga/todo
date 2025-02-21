@@ -1,6 +1,7 @@
 import { assertEquals } from "jsr:@std/assert/equals";
 import { KeyValueDb } from "../../../core/key-value-db/impl.ts";
 import { Ok } from "../../../core/result.ts";
+import { TodoListId } from "../../list/list-id.ts";
 import { TodoItem } from "../item.ts";
 import { Config, TodoItemDb } from "./impl.ts";
 
@@ -45,10 +46,12 @@ Deno.test("put and get", async () => {
     const todoItem = TodoItem.random();
     const before = await f.todoItemDb.list({
       listId: todoItem.listId,
+      itemFilter: "all",
     });
     const put = await f.todoItemDb.put(todoItem);
     const after = await f.todoItemDb.list({
       listId: todoItem.listId,
+      itemFilter: "all",
     });
 
     assertEquals(before, Ok({ items: [], limit: 0, offset: 0, total: 0 }));
@@ -69,5 +72,59 @@ Deno.test("get", async () => {
     assertEquals(before, Ok(null));
     assertEquals(put, Ok(null));
     assertEquals(get, Ok(todoItem));
+  }
+});
+
+Deno.test("filter items", async () => {
+  for (const f of await Fixtures()) {
+    const listId = TodoListId.generate();
+    const todoItem1 = TodoItem.random({
+      status: "done",
+      listId,
+    });
+    const todoItem2 = TodoItem.random({
+      status: "pending",
+      listId,
+    });
+    const todoItem3 = TodoItem.random({
+      status: "done",
+      listId,
+    });
+
+    await f.todoItemDb.put(todoItem1);
+    await f.todoItemDb.put(todoItem2);
+    await f.todoItemDb.put(todoItem3);
+
+    const allItems = await f.todoItemDb.list({
+      listId: todoItem1.listId,
+      itemFilter: "all",
+    });
+    assertEquals(
+      allItems,
+      Ok({
+        items: [todoItem1, todoItem2, todoItem3],
+        limit: 3,
+        offset: 0,
+        total: 3,
+      })
+    );
+
+    const pendingItems = await f.todoItemDb.list({
+      listId: todoItem1.listId,
+      itemFilter: "pending",
+    });
+    assertEquals(
+      pendingItems,
+      Ok({ items: [todoItem2], limit: 1, offset: 0, total: 1 })
+    );
+
+    const doneItems = await f.todoItemDb.list({
+      listId: todoItem1.listId,
+      itemFilter: "done",
+    });
+    assertEquals(
+      doneItems,
+      Ok({ items: [todoItem1, todoItem3], limit: 2, offset: 0, total: 2 })
+    );
   }
 });

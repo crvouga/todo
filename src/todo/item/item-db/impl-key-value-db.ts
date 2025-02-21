@@ -34,23 +34,34 @@ export const TodoItemDb = async (config: Config): Promise<ITodoItemDb> => {
         allIds.map(async (id) => await keyValueDb.get(id))
       );
 
-      const todoItems = results.flatMap((result) => {
-        if (isErr(result)) {
-          return [];
-        }
+      const todoItems = results
+        .flatMap((result) => {
+          if (isErr(result)) {
+            return [];
+          }
 
-        const decoded = TodoItem.decode(result.v ?? "");
+          const decoded = TodoItem.decode(result.v ?? "");
 
-        if (!decoded) {
-          return [];
-        }
+          if (!decoded) {
+            return [];
+          }
 
-        if (decoded.listId !== input.listId) {
-          return [];
-        }
+          if (decoded.listId !== input.listId) {
+            return [];
+          }
 
-        return [decoded];
-      });
+          return [decoded];
+        })
+        .filter((item) => {
+          switch (input.itemFilter) {
+            case "all":
+              return true;
+            case "pending":
+              return item.status === "pending";
+            case "done":
+              return item.status === "done";
+          }
+        });
 
       return Ok({
         items: todoItems,

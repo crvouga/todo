@@ -18,6 +18,7 @@ Deno.test("from and to url", () => {
     {
       t: "list-view",
       listId: null,
+      itemFilter: "all",
     },
   ];
 

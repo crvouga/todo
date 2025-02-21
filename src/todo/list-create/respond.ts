@@ -48,7 +48,10 @@ const respondPost: typeof respond = async (input) => {
     }
     case "ok": {
       return redirect(
-        href({ t: "todo", c: { t: "list-view", listId: listNew.id } })
+        href({
+          t: "todo",
+          c: { t: "list-view", listId: listNew.id, itemFilter: "all" },
+        })
       );
     }
     default: {

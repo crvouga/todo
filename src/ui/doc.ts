@@ -6,7 +6,7 @@ export const viewDoc = (input: { body: string; preload: string[] }) => html`
       <title>Todo</title>
       <link
         rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.min.css"
+        href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
       />
       <meta
         name="viewport"
@@ -16,53 +16,6 @@ export const viewDoc = (input: { body: string; preload: string[] }) => html`
       ${input.preload
         .map((url) => html`<link rel="prefetch" href=${url} as="document" />`)
         .join("")}
-      <script>
-        document.addEventListener("submit", (event) => {
-          const form = event.target;
-          if (form.tagName === "FORM") {
-            if (!form.checkValidity()) {
-              event.preventDefault();
-              removeLoadingState(form);
-              return;
-            }
-
-            addLoadingState(form);
-
-            const onDone = () => {
-              removeLoadingState(form);
-            };
-
-            window.addEventListener("unload", onDone, { once: true });
-          }
-        });
-
-        function addLoadingState(form) {
-          const submitButton = form.querySelector("button[type='submit']");
-          submitButton.setAttribute("aria-busy", "true");
-          setTimeout(() => {
-            submitButton.setAttribute("disabled", "true");
-          }, 0);
-        }
-
-        function removeLoadingState(form) {
-          const submitButton = form.querySelector("button[type='submit']");
-          if (submitButton) {
-            submitButton.removeAttribute("aria-busy");
-            submitButton.removeAttribute("disabled");
-          }
-        }
-
-        function swapInnerHTML(selector, url) {
-          fetch(url)
-            .then((res) => res.text())
-            .then((html) => {
-              const element = document.querySelector(selector);
-              if (element) {
-                element.innerHTML = html;
-              }
-            });
-        }
-      </script>
     </head>
 
     <body>

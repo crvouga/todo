@@ -55,8 +55,8 @@ const viewForm = (input: { list: TodoList | null }): string => {
 
   return html`
     ${viewTopBar({})}
-    <main>
-      <section>
+    <main class="container">
+      <section class="container">
         <h1>Delete list forever?</h1>
         <p>Are you sure you want to delete this list? This cannot be undo.</p>
         <form method="POST" onsubmit="return confirm('Are you sure?')">

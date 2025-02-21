@@ -9,11 +9,13 @@ import { TodoItem } from "../item/item.ts";
 import { TodoListId } from "../list/list-id.ts";
 import { TodoList } from "../list/list.ts";
 import { Route } from "../route.ts";
+import { ItemFilter } from "./item-filter.ts";
 
 const respond = async (input: {
   ctx: ICtx;
   req: Request;
   route: Route;
+  itemFilter: ItemFilter;
   listId: TodoListId | null;
 }): Promise<Response> => {
   const preload = [
@@ -27,7 +29,7 @@ const respond = async (input: {
   if (!input.listId) {
     return respondDoc({
       preload,
-      body: viewSingle({ list: null, items: [] }),
+      body: viewSingle({ list: null, itemFilter: input.itemFilter, items: [] }),
     });
   }
 
@@ -40,10 +42,17 @@ const respond = async (input: {
     (result) => unwrapOr(result, [])
   );
 
-  return respondDoc({ preload, body: viewSingle({ list, items }) });
+  return respondDoc({
+    preload,
+    body: viewSingle({ list, itemFilter: input.itemFilter, items }),
+  });
 };
 
-const viewSingle = (input: { list: TodoList | null; items: TodoItem[] }) => {
+const viewSingle = (input: {
+  list: TodoList | null;
+  itemFilter: ItemFilter;
+  items: TodoItem[];
+}) => {
   const { list, items } = input;
   if (!list) {
     return renderNotFound();
@@ -52,14 +61,24 @@ const viewSingle = (input: { list: TodoList | null; items: TodoItem[] }) => {
     ${viewTopBar({
       end: html`<li>${viewAddNewItem({ listId: list.id })}</li>`,
     })}
-    <main>
-      <section>
-        <h1>${list.name}</h1>
+    <main class="container">
+      <section class="container">
+        <div
+          style="display: flex; align-items: center; justify-content: space-between;"
+        >
+          <h1 style="flex: 1;">${list.name}</h1>
+        </div>
+        ${ItemFilter.viewButtonGroup({
+          filter: input.itemFilter,
+          listId: list.id,
+        })}
         ${renderEmptyItemsState({ itemCount: items.length })}
         <ul
           style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px;"
         >
-          ${items.map((item) => viewItem({ item })).join("\n")}
+          ${items
+            .map((item) => viewItem({ item, itemFilter: input.itemFilter }))
+            .join("\n")}
         </ul>
       </section>
     </main>
@@ -69,8 +88,8 @@ const viewSingle = (input: { list: TodoList | null; items: TodoItem[] }) => {
 const renderNotFound = () => {
   return html`
     ${viewTopBar({})}
-    <main>
-      <section><h1>List not found</h1></section>
+    <main class="container">
+      <section class="container"><h1>List not found</h1></section>
     </main>
   `;
 };
@@ -84,12 +103,15 @@ const renderEmptyItemsState = (input: { itemCount: number }) => {
   </p>`;
 };
 
-const viewItem = (input: { item: TodoItem }) => html`
+const viewItem = (input: { item: TodoItem; itemFilter: ItemFilter }) => html`
   <li
     style="display: flex; align-items: center; justify-content: space-between; margin: 0;"
   >
     <div style="display: flex; align-items: center; gap: 8px;">
-      ${input.item.status === "done" ? "✅" : "⬜️"}
+      ${viewToggleStatusButton({
+        item: input.item,
+        itemFilter: input.itemFilter,
+      })}
       <h2
         style="${input.item.status === "done"
           ? "text-decoration: line-through; display: inline; margin: 0;"
@@ -99,8 +121,10 @@ const viewItem = (input: { item: TodoItem }) => html`
       </h2>
     </div>
     <div style="display: flex; gap: 8px; align-items: center;">
-      ${viewToggleStatusButton({ item: input.item })}
-      ${viewDeleteItemButton({ item: input.item })}
+      ${viewDeleteItemButton({
+        item: input.item,
+        itemFilter: input.itemFilter,
+      })}
     </div>
   </li>
 `;
@@ -115,38 +139,71 @@ const viewAction = (input: { action: string; label: string }) => {
   `;
 };
 
-const viewToggleStatusButton = (input: { item: TodoItem }): string => {
+const viewToggleStatusButton = (input: {
+  item: TodoItem;
+  itemFilter: ItemFilter;
+}): string => {
   switch (input.item.status) {
     case "done":
-      return viewMarkAsPendingButton({ item: input.item });
+      return viewMarkAsPendingButton({
+        item: input.item,
+        itemFilter: input.itemFilter,
+      });
     case "pending":
-      return viewMarkAsDoneButton({ item: input.item });
+      return viewMarkAsDoneButton({
+        item: input.item,
+        itemFilter: input.itemFilter,
+      });
   }
 };
 
-const viewMarkAsDoneButton = (input: { item: TodoItem }) => {
+const viewMarkAsDoneButton = (input: {
+  item: TodoItem;
+  itemFilter: ItemFilter;
+}) => {
   return viewAction({
     action: href({
       t: "todo",
-      c: { t: "item-mark-as-done", itemId: input.item.id },
+      c: {
+        t: "item-mark-as-done",
+        itemId: input.item.id,
+        itemFilter: input.itemFilter,
+      },
     }),
-    label: "Done",
+    label: "⬜️ Pending",
   });
 };
 
-const viewMarkAsPendingButton = (input: { item: TodoItem }) => {
+const viewMarkAsPendingButton = (input: {
+  item: TodoItem;
+  itemFilter: ItemFilter;
+}) => {
   return viewAction({
     action: href({
       t: "todo",
-      c: { t: "item-mark-as-pending", itemId: input.item.id },
+      c: {
+        t: "item-mark-as-pending",
+        itemId: input.item.id,
+        itemFilter: input.itemFilter,
+      },
     }),
-    label: "Pending",
+    label: "✅ Done",
   });
 };
 
-const viewDeleteItemButton = (input: { item: TodoItem }) => {
+const viewDeleteItemButton = (input: {
+  item: TodoItem;
+  itemFilter: ItemFilter;
+}) => {
   return viewAction({
-    action: href({ t: "todo", c: { t: "item-delete", itemId: input.item.id } }),
+    action: href({
+      t: "todo",
+      c: {
+        t: "item-delete",
+        itemId: input.item.id,
+        itemFilter: input.itemFilter,
+      },
+    }),
     label: "Delete",
   });
 };

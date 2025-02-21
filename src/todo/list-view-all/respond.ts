@@ -20,7 +20,10 @@ const respond = async (input: {
   );
 
   const preload = lists.map((list) =>
-    href({ t: "todo", c: { t: "list-view", listId: list.id } })
+    href({
+      t: "todo",
+      c: { t: "list-view", listId: list.id, itemFilter: "all" },
+    })
   );
   preload.push(href({ t: "todo", c: { t: "list-create" } }));
 
@@ -32,11 +35,11 @@ const respond = async (input: {
 
 const viewIndex = (input: { lists: TodoList[] }) => html`
   ${viewTopBar({ end: html`<li>${viewCreateNewButton()}</li>` })}
-  <main>
-    <section>
+  <main class="container">
+    <section class="container">
       <h1>Lists</h1>
     </section>
-    <section>
+    <section class="container">
       ${input.lists.map((list) => viewListCard({ list })).join("")}
     </section>
   </main>
@@ -58,7 +61,7 @@ const viewListCard = (input: { list: TodoList }) => {
           class="outline"
           href="${href({
             t: "todo",
-            c: { t: "list-view", listId: input.list.id },
+            c: { t: "list-view", listId: input.list.id, itemFilter: "all" },
           })}"
         >
           View

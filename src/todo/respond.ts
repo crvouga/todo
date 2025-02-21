@@ -21,7 +21,11 @@ export const respond = (input: {
     }
 
     case "list-view": {
-      return ListViewSingle.respond({ ...input, listId: input.route.listId });
+      return ListViewSingle.respond({
+        ...input,
+        listId: input.route.listId,
+        itemFilter: input.route.itemFilter,
+      });
     }
 
     case "list-create": {
@@ -41,17 +45,26 @@ export const respond = (input: {
     }
 
     case "item-delete": {
-      return ItemDelete.respond({ ...input, itemId: input.route.itemId });
+      return ItemDelete.respond({
+        ...input,
+        itemId: input.route.itemId,
+        itemFilter: input.route.itemFilter,
+      });
     }
 
     case "item-mark-as-done": {
-      return ItemMarkAsDone.respond({ ...input, itemId: input.route.itemId });
+      return ItemMarkAsDone.respond({
+        ...input,
+        itemId: input.route.itemId,
+        itemFilter: input.route.itemFilter,
+      });
     }
 
     case "item-mark-as-pending": {
       return ItemMarkAsPending.respond({
         ...input,
         itemId: input.route.itemId,
+        itemFilter: input.route.itemFilter,
       });
     }
   }

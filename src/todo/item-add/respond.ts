@@ -77,7 +77,7 @@ const respondPost: typeof respond = async (input) => {
   return redirect(
     href({
       t: "todo",
-      c: { t: "list-view", listId },
+      c: { t: "list-view", listId, itemFilter: "all" },
     })
   );
 };
@@ -88,8 +88,8 @@ const viewForm = (input: {
 }) => {
   return html`
     ${viewTopBar({})}
-    <main>
-      <section>
+    <main class="container">
+      <section class="container">
         <h1>Add New Item</h1>
         <form method="POST">
           <fieldset>

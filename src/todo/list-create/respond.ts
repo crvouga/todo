@@ -60,8 +60,8 @@ const respondPost: typeof respond = async (input) => {
 
 const viewForm = () => html`
   ${viewTopBar({})}
-  <main>
-    <section>
+  <main class="container">
+    <section class="container">
       <h1>Create New List</h1>
       <form method="POST">
         <fieldset>

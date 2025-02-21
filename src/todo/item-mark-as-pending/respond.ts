@@ -5,10 +5,13 @@ import { ICtx } from "../../ctx.ts";
 import { href } from "../../route.ts";
 import { TodoItemId } from "../item/item-id.ts";
 import { TodoItem } from "../item/item.ts";
+import { ItemFilter } from "../list-view-single/item-filter.ts";
+
 const respond = async (input: {
   ctx: ICtx;
   req: Request;
   itemId: TodoItemId | null;
+  itemFilter: ItemFilter;
 }): Promise<Response> => {
   switch (input.req.method) {
     case "POST": {
@@ -23,7 +26,12 @@ const respond = async (input: {
         (_) => _ ?? null
       );
 
-      return redirect(href({ t: "todo", c: { t: "list-view", listId } }));
+      return redirect(
+        href({
+          t: "todo",
+          c: { t: "list-view", listId, itemFilter: input.itemFilter },
+        })
+      );
     }
   }
 };
@@ -65,7 +73,10 @@ const respondPost: typeof respond = async (input) => {
   }
 
   return redirect(
-    href({ t: "todo", c: { t: "list-view", listId: item.listId } })
+    href({
+      t: "todo",
+      c: { t: "list-view", listId: item.listId, itemFilter: input.itemFilter },
+    })
   );
 };
 

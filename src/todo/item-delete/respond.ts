@@ -4,7 +4,7 @@ import { isErr, unwrapOr } from "../../core/result.ts";
 import { ICtx } from "../../ctx.ts";
 import { href } from "../../route.ts";
 import { TodoItemId } from "../item/item-id.ts";
-import { ItemFilter } from "../list-view-single/item-filter.ts";
+import { ItemFilter } from "../item/item-filter.ts";
 
 const respond = async (input: {
   ctx: ICtx;

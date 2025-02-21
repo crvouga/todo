@@ -9,7 +9,7 @@ import { TodoItem } from "../item/item.ts";
 import { TodoListId } from "../list/list-id.ts";
 import { TodoList } from "../list/list.ts";
 import { Route } from "../route.ts";
-import { ItemFilter } from "./item-filter.ts";
+import { ItemFilter } from "../item/item-filter.ts";
 
 const respond = async (input: {
   ctx: ICtx;
@@ -170,7 +170,7 @@ const viewMarkAsDoneButton = (input: {
         itemFilter: input.itemFilter,
       },
     }),
-    label: "⬜️ Pending",
+    label: "Pending",
   });
 };
 
@@ -187,7 +187,7 @@ const viewMarkAsPendingButton = (input: {
         itemFilter: input.itemFilter,
       },
     }),
-    label: "✅ Done",
+    label: "☑ Done",
   });
 };
 

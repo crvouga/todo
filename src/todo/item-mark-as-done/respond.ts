@@ -5,7 +5,7 @@ import { ICtx } from "../../ctx.ts";
 import { href } from "../../route.ts";
 import { TodoItemId } from "../item/item-id.ts";
 import { TodoItem } from "../item/item.ts";
-import { ItemFilter } from "../list-view-single/item-filter.ts";
+import { ItemFilter } from "../item/item-filter.ts";
 const respond = async (input: {
   ctx: ICtx;
   req: Request;

@@ -1,5 +1,5 @@
 import { TodoItemId } from "./item/item-id.ts";
-import { ItemFilter } from "./list-view-single/item-filter.ts";
+import { ItemFilter } from "./item/item-filter.ts";
 import { TodoListId } from "./list/list-id.ts";
 
 export type Route =

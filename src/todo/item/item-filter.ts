@@ -27,7 +27,7 @@ const viewButtonGroup = (input: {
     <div role="group">
       <a
         role="button"
-        class="${input.filter === "all" ? "outline" : ""}"
+        class="${input.filter === "all" ? "" : "outline"}"
         href="${href({
           t: "todo",
           c: { t: "list-view", listId: input.listId, itemFilter: "all" },
@@ -38,7 +38,7 @@ const viewButtonGroup = (input: {
       </a>
       <a
         role="button"
-        class="${input.filter === "pending" ? "outline" : ""}"
+        class="${input.filter === "pending" ? "" : "outline"}"
         href="${href({
           t: "todo",
           c: { t: "list-view", listId: input.listId, itemFilter: "pending" },
@@ -49,7 +49,7 @@ const viewButtonGroup = (input: {
       </a>
       <a
         role="button"
-        class="${input.filter === "done" ? "outline" : ""}"
+        class="${input.filter === "done" ? "" : "outline"}"
         href="${href({
           t: "todo",
           c: { t: "list-view", listId: input.listId, itemFilter: "done" },

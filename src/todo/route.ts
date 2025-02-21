@@ -27,6 +27,14 @@ export type Route =
   | {
       t: "item-delete";
       itemId: TodoItemId | null;
+    }
+  | {
+      t: "item-mark-as-done";
+      itemId: TodoItemId | null;
+    }
+  | {
+      t: "item-mark-as-pending";
+      itemId: TodoItemId | null;
     };
 
 const fromUrl = (url: URL): Route | null => {
@@ -64,6 +72,18 @@ const fromUrl = (url: URL): Route | null => {
     case "/todo/item-delete": {
       return {
         t: "item-delete",
+        itemId: TodoItemId.decode(url.searchParams.get("itemId")),
+      };
+    }
+    case "/todo/item-mark-as-done": {
+      return {
+        t: "item-mark-as-done",
+        itemId: TodoItemId.decode(url.searchParams.get("itemId")),
+      };
+    }
+    case "/todo/item-mark-as-pending": {
+      return {
+        t: "item-mark-as-pending",
         itemId: TodoItemId.decode(url.searchParams.get("itemId")),
       };
     }
@@ -109,6 +129,20 @@ const toUrl = (base: URL, route: Route): URL => {
     }
     case "item-delete": {
       const url = new URL("/todo/item-delete", base);
+      if (route.itemId) {
+        url.searchParams.set("itemId", route.itemId);
+      }
+      return url;
+    }
+    case "item-mark-as-done": {
+      const url = new URL("/todo/item-mark-as-done", base);
+      if (route.itemId) {
+        url.searchParams.set("itemId", route.itemId);
+      }
+      return url;
+    }
+    case "item-mark-as-pending": {
+      const url = new URL("/todo/item-mark-as-pending", base);
       if (route.itemId) {
         url.searchParams.set("itemId", route.itemId);
       }

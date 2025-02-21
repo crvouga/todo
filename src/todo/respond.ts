@@ -1,6 +1,8 @@
 import { ICtx } from "../ctx.ts";
 import { ItemAdd } from "./item-add/respond.ts";
 import { ItemDelete } from "./item-delete/respond.ts";
+import { ItemMarkAsDone } from "./item-mark-as-done/respond.ts";
+import { ItemMarkAsPending } from "./item-mark-as-pending/respond.ts";
 import { ListCreate } from "./list-create/respond.ts";
 import { ListDelete } from "./list-delete/respond.ts";
 import { ListEdit } from "./list-edit/respond.ts";
@@ -40,6 +42,17 @@ export const respond = (input: {
 
     case "item-delete": {
       return ItemDelete.respond({ ...input, itemId: input.route.itemId });
+    }
+
+    case "item-mark-as-done": {
+      return ItemMarkAsDone.respond({ ...input, itemId: input.route.itemId });
+    }
+
+    case "item-mark-as-pending": {
+      return ItemMarkAsPending.respond({
+        ...input,
+        itemId: input.route.itemId,
+      });
     }
   }
 };

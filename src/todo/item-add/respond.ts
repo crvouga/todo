@@ -60,6 +60,7 @@ const respondPost: typeof respond = async (input) => {
     id: TodoItemId.generate(),
     label,
     listId,
+    status: "pending",
   };
 
   const put = await input.ctx.todoItemDb.put(itemNew);

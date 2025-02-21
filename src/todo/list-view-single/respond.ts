@@ -88,29 +88,68 @@ const viewItem = (input: { item: TodoItem }) => html`
   <li
     style="display: flex; align-items: center; justify-content: space-between; margin: 0;"
   >
-    <span>${input.item.label}</span>
-    ${viewDeleteItemButton({ item: input.item })}
+    <div style="display: flex; align-items: center; gap: 8px;">
+      ${input.item.status === "done" ? "✅" : "⬜️"}
+      <h2
+        style="${input.item.status === "done"
+          ? "text-decoration: line-through; display: inline; margin: 0;"
+          : "display: inline; margin: 0;"}"
+      >
+        ${input.item.label}
+      </h2>
+    </div>
+    <div style="display: flex; gap: 8px; align-items: center;">
+      ${viewToggleStatusButton({ item: input.item })}
+      ${viewDeleteItemButton({ item: input.item })}
+    </div>
   </li>
 `;
 
-const viewDeleteItemButton = (input: { item: TodoItem }) =>
-  html`
-    <form
-      action="${href({
-        t: "todo",
-        c: {
-          t: "item-delete",
-          itemId: input.item.id,
-        },
-      })}"
-      method="POST"
-      style="margin: 0"
-    >
+const viewAction = (input: { action: string; label: string }) => {
+  return html`
+    <form action="${input.action}" method="POST" style="margin: 0">
       <button style="margin: 0" type="submit" role="button">
-        <small>Delete</small>
+        ${input.label}
       </button>
     </form>
   `;
+};
+
+const viewToggleStatusButton = (input: { item: TodoItem }): string => {
+  switch (input.item.status) {
+    case "done":
+      return viewMarkAsPendingButton({ item: input.item });
+    case "pending":
+      return viewMarkAsDoneButton({ item: input.item });
+  }
+};
+
+const viewMarkAsDoneButton = (input: { item: TodoItem }) => {
+  return viewAction({
+    action: href({
+      t: "todo",
+      c: { t: "item-mark-as-done", itemId: input.item.id },
+    }),
+    label: "Done",
+  });
+};
+
+const viewMarkAsPendingButton = (input: { item: TodoItem }) => {
+  return viewAction({
+    action: href({
+      t: "todo",
+      c: { t: "item-mark-as-pending", itemId: input.item.id },
+    }),
+    label: "Pending",
+  });
+};
+
+const viewDeleteItemButton = (input: { item: TodoItem }) => {
+  return viewAction({
+    action: href({ t: "todo", c: { t: "item-delete", itemId: input.item.id } }),
+    label: "Delete",
+  });
+};
 
 const viewAddNewItem = (input: { listId: TodoListId }) => html`
   <a

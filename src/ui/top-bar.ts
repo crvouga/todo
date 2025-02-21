@@ -2,8 +2,8 @@ import { html } from "../core/html.ts";
 import { href } from "../route.ts";
 
 export const viewTopBar = (input: { end?: string }) => {
-  return html` <header>
-    <nav>
+  return html` <header class="container">
+    <nav class="container">
       <ul>
         <li>
           <a href="${href({ t: "todo", c: { t: "list-view-all" } })}">

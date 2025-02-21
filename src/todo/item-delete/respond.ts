@@ -17,11 +17,11 @@ const respond = async (input: {
     }
 
     default: {
-      const listId = await pipe(
-        input.itemId,
-        (itemId) => input.ctx.todoItemDb.get(itemId),
-        async (result) => unwrapOr(await result, null),
-        async (item) => (await item)?.listId ?? null
+      const listId = pipe(
+        await input.ctx.todoItemDb.get(input.itemId),
+        (_) => unwrapOr(_, null),
+        (_) => _?.listId,
+        (_) => _ ?? null
       );
 
       return redirect(href({ t: "todo", c: { t: "list-view", listId } }));

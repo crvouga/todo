@@ -58,6 +58,12 @@ const viewSingle = (input: { list: TodoList | null; items: TodoItem[] }) => {
     <main>
       <section>
         <h1>${list.name}</h1>
+        ${items.length === 0
+          ? html`<p>
+              No items found in this list. You can add new items using the
+              button above.
+            </p>`
+          : ""}
         <ul>
           ${items.map((item) => viewItem({ item })).join("\n")}
         </ul>

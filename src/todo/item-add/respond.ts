@@ -27,12 +27,7 @@ const respond = async (input: {
         (_) => mapOk(_, (_) => _.items),
         (_) => unwrapOr(_, [])
       );
-      return respondDoc({
-        body: viewForm({
-          lists,
-          selected: input.listId,
-        }),
-      });
+      return respondDoc({ body: viewForm({ lists, selected: input.listId }) });
     }
   }
 };
@@ -99,13 +94,18 @@ const viewForm = (input: {
           <fieldset>
             <label>
               List
-              <select type="text" name="listId" value="${input.selected}">
-                ${input.lists.map(
-                  (list) =>
-                    html`<option value="${list.id}">
-                      ${list.name.trim() || "List has no name"}
-                    </option>`
-                )}
+              <select type="text" name="listId">
+                ${input.lists
+                  .map(
+                    (list) =>
+                      html`<option
+                        value="${list.id}"
+                        ${list.id === input.selected ? "selected" : ""}
+                      >
+                        ${list.name.trim() || "List has no name"}
+                      </option>`
+                  )
+                  .join("\n")}
               </select>
             </label>
           </fieldset>

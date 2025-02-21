@@ -46,10 +46,7 @@ const respond = async (input: {
 const viewSingle = (input: { list: TodoList | null; items: TodoItem[] }) => {
   const { list, items } = input;
   if (!list) {
-    return html` ${viewTopBar({})}
-      <main>
-        <section><h1>List not found</h1></section>
-      </main>`;
+    return renderNotFound();
   }
   return html`
     ${viewTopBar({
@@ -58,13 +55,10 @@ const viewSingle = (input: { list: TodoList | null; items: TodoItem[] }) => {
     <main>
       <section>
         <h1>${list.name}</h1>
-        ${items.length === 0
-          ? html`<p>
-              No items found in this list. You can add new items using the
-              button above.
-            </p>`
-          : ""}
-        <ul>
+        ${renderEmptyItemsState({ itemCount: items.length })}
+        <ul
+          style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px;"
+        >
           ${items.map((item) => viewItem({ item })).join("\n")}
         </ul>
       </section>
@@ -72,8 +66,31 @@ const viewSingle = (input: { list: TodoList | null; items: TodoItem[] }) => {
   `;
 };
 
+const renderNotFound = () => {
+  return html`
+    ${viewTopBar({})}
+    <main>
+      <section><h1>List not found</h1></section>
+    </main>
+  `;
+};
+
+const renderEmptyItemsState = (input: { itemCount: number }) => {
+  if (input.itemCount > 0) {
+    return "";
+  }
+  return html` <p>
+    No items found in this list. You can add new items using the button above.
+  </p>`;
+};
+
 const viewItem = (input: { item: TodoItem }) => html`
-  <li>${input.item.label} ${viewDeleteItemButton({ item: input.item })}</li>
+  <li
+    style="display: flex; align-items: center; justify-content: space-between; margin: 0;"
+  >
+    <span>${input.item.label}</span>
+    ${viewDeleteItemButton({ item: input.item })}
+  </li>
 `;
 
 const viewDeleteItemButton = (input: { item: TodoItem }) =>
@@ -87,9 +104,11 @@ const viewDeleteItemButton = (input: { item: TodoItem }) =>
         },
       })}"
       method="POST"
-      style="display: inline;"
+      style="margin: 0"
     >
-      <button type="submit" role="button">Delete</button>
+      <button style="margin: 0" type="submit" role="button">
+        <small>Delete</small>
+      </button>
     </form>
   `;
 

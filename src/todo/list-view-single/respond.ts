@@ -5,11 +5,11 @@ import { ICtx } from "../../ctx.ts";
 import { href } from "../../route.ts";
 import { respondDoc } from "../../ui/doc.ts";
 import { viewTopBar } from "../../ui/top-bar.ts";
+import { ItemFilter } from "../item/item-filter.ts";
 import { TodoItem } from "../item/item.ts";
 import { TodoListId } from "../list/list-id.ts";
 import { TodoList } from "../list/list.ts";
 import { Route } from "../route.ts";
-import { ItemFilter } from "../item/item-filter.ts";
 
 const respond = async (input: {
   ctx: ICtx;
@@ -24,12 +24,24 @@ const respond = async (input: {
       c: { t: "item-add", listId: input.listId },
     }),
     href({ t: "todo", c: { t: "list-view-all" } }),
+    ...ItemFilter.ALL.map((itemFilter) =>
+      href({
+        t: "todo",
+        c: { t: "list-view", listId: input.listId, itemFilter },
+      })
+    ),
   ];
 
   if (!input.listId) {
     return respondDoc({
       preload,
-      body: viewSingle({ list: null, itemFilter: input.itemFilter, items: [] }),
+      body: viewSingle({
+        list: null,
+        itemFilter: input.itemFilter,
+        items: [],
+        pendingCount: 0,
+        doneCount: 0,
+      }),
     });
   }
 
@@ -43,9 +55,32 @@ const respond = async (input: {
     (result) => unwrapOr(result, [])
   );
 
+  const pendingCount: number = pipe(
+    await input.ctx.todoItemDb.list({
+      listId: input.listId,
+      itemFilter: "pending",
+    }),
+    (result) => mapOk(result, (paginated) => paginated.total),
+    (result) => unwrapOr(result, 0)
+  );
+
+  const doneCount: number = pipe(
+    await input.ctx.todoItemDb.list({
+      listId: input.listId,
+      itemFilter: "done",
+    }),
+    (result) => mapOk(result, (paginated) => paginated.total),
+    (result) => unwrapOr(result, 0)
+  );
   return respondDoc({
     preload,
-    body: viewSingle({ list, itemFilter: input.itemFilter, items }),
+    body: viewSingle({
+      list,
+      itemFilter: input.itemFilter,
+      items,
+      pendingCount,
+      doneCount,
+    }),
   });
 };
 
@@ -53,6 +88,8 @@ const viewSingle = (input: {
   list: TodoList | null;
   itemFilter: ItemFilter;
   items: TodoItem[];
+  pendingCount: number;
+  doneCount: number;
 }) => {
   const { list, items } = input;
   if (!list) {
@@ -72,6 +109,8 @@ const viewSingle = (input: {
         ${ItemFilter.viewButtonGroup({
           filter: input.itemFilter,
           listId: list.id,
+          pendingCount: input.pendingCount,
+          doneCount: input.doneCount,
         })}
         ${renderEmptyItemsState({ itemCount: items.length })}
         <ul

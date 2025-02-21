@@ -4,6 +4,8 @@ import { TodoListId } from "../list/list-id.ts";
 
 export type ItemFilter = "all" | "pending" | "done";
 
+const ALL: ItemFilter[] = ["all", "pending", "done"];
+
 const encode = (filter: ItemFilter): string => {
   return filter;
 };
@@ -22,7 +24,10 @@ const decode = (filter: unknown): ItemFilter => {
 const viewButtonGroup = (input: {
   filter: ItemFilter;
   listId: TodoListId;
+  pendingCount: number;
+  doneCount: number;
 }): string => {
+  const allCount = input.pendingCount + input.doneCount;
   return html`
     <div role="group">
       <a
@@ -34,7 +39,7 @@ const viewButtonGroup = (input: {
         })}"
       >
         <!--  -->
-        All
+        All (${String(allCount)})
       </a>
       <a
         role="button"
@@ -45,7 +50,7 @@ const viewButtonGroup = (input: {
         })}"
       >
         <!--  -->
-        Pending
+        Pending (${String(input.pendingCount)})
       </a>
       <a
         role="button"
@@ -56,7 +61,7 @@ const viewButtonGroup = (input: {
         })}"
       >
         <!--  -->
-        Done
+        Done (${String(input.doneCount)})
       </a>
     </div>
   `;
@@ -66,4 +71,5 @@ export const ItemFilter = {
   encode,
   decode,
   viewButtonGroup,
+  ALL,
 };

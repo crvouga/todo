@@ -1,3 +1,4 @@
+import { TodoItemId } from "./item/item-id.ts";
 import { TodoListId } from "./list/list-id.ts";
 
 export type Route =
@@ -22,6 +23,10 @@ export type Route =
   | {
       t: "item-add";
       listId: TodoListId | null;
+    }
+  | {
+      t: "item-delete";
+      itemId: TodoItemId | null;
     };
 
 const fromUrl = (url: URL): Route | null => {
@@ -54,6 +59,12 @@ const fromUrl = (url: URL): Route | null => {
       return {
         t: "item-add",
         listId: TodoListId.decode(url.searchParams.get("id")),
+      };
+    }
+    case "/todo/item-delete": {
+      return {
+        t: "item-delete",
+        itemId: TodoItemId.decode(url.searchParams.get("itemId")),
       };
     }
     default: {
@@ -93,6 +104,13 @@ const toUrl = (base: URL, route: Route): URL => {
       const url = new URL("/todo/item-add", base);
       if (route.listId) {
         url.searchParams.set("id", route.listId);
+      }
+      return url;
+    }
+    case "item-delete": {
+      const url = new URL("/todo/item-delete", base);
+      if (route.itemId) {
+        url.searchParams.set("itemId", route.itemId);
       }
       return url;
     }

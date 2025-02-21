@@ -9,5 +9,6 @@ export type ITodoItemDb = {
   list: (input: {
     listId: TodoListId;
   }) => Promise<Result<Paginated<TodoItem>, Error>>;
+  get: (id: TodoItemId | null) => Promise<Result<TodoItem | null, Error>>;
   zap: (id: TodoItemId | null) => Promise<Result<null, Error>>;
 };

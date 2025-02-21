@@ -1,5 +1,6 @@
 import { ICtx } from "../ctx.ts";
-import { AddListItem } from "./item-add/respond.ts";
+import { ItemAdd } from "./item-add/respond.ts";
+import { ItemDelete } from "./item-delete/respond.ts";
 import { ListCreate } from "./list-create/respond.ts";
 import { ListDelete } from "./list-delete/respond.ts";
 import { ListEdit } from "./list-edit/respond.ts";
@@ -34,7 +35,11 @@ export const respond = (input: {
     }
 
     case "item-add": {
-      return AddListItem.respond({ ...input, listId: input.route.listId });
+      return ItemAdd.respond({ ...input, listId: input.route.listId });
+    }
+
+    case "item-delete": {
+      return ItemDelete.respond({ ...input, itemId: input.route.itemId });
     }
   }
 };

@@ -121,6 +121,6 @@ const viewForm = (input: {
     </main>
   `;
 };
-export const AddListItem = {
+export const ItemAdd = {
   respond,
 };

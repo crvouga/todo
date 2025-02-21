@@ -81,5 +81,15 @@ export const TodoItemDb = async (config: Config): Promise<ITodoItemDb> => {
 
       return keyValueDb.zap(id);
     },
+    async get(id) {
+      if (!id) {
+        return Ok(null);
+      }
+      const result = await keyValueDb.get(id);
+      if (isErr(result)) {
+        return result;
+      }
+      return Ok(result.v ? TodoItem.decode(result.v) : null);
+    },
   };
 };

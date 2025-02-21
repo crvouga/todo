@@ -59,3 +59,15 @@ Deno.test("put and get", async () => {
     );
   }
 });
+
+Deno.test("get", async () => {
+  for (const f of await Fixtures()) {
+    const todoItem = TodoItem.random();
+    const before = await f.todoItemDb.get(todoItem.id);
+    const put = await f.todoItemDb.put(todoItem);
+    const get = await f.todoItemDb.get(todoItem.id);
+    assertEquals(before, Ok(null));
+    assertEquals(put, Ok(null));
+    assertEquals(get, Ok(todoItem));
+  }
+});
